@@ -1,0 +1,72 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+
+ // } Driver Code Ends
+
+
+/* Function to do DFS of graph
+
+g : adjacency list of graph
+N : number of vertices
+
+return a list containing the DFS traversal of the given graph
+*/
+void fun(int s, vector<int> g[], bool visited[], vector<int> &ans){
+    visited[s] = true;
+    // cout<<s;
+    ans.push_back(s);
+        for(int i=0;i<g[s].size();i++){
+        if(visited[g[s][i]]==false){
+            fun(g[s][i],g,visited,ans);
+        }
+        // return ans;
+    }
+}
+vector <int> dfs(vector<int> g[], int N)
+{
+    // we are given the fraph adj list and no. of vertices.
+    
+    bool visited[N];
+    vector<int>ans;
+    for(int i=0;i<N;i++){
+        visited[i]=false;
+    }
+    fun(0,g,visited,ans);
+    return ans;
+
+}
+
+
+// { Driver Code Starts.
+
+int main()
+{
+    int T;
+    cin>>T;
+    while(T--)
+    {
+
+        int N, E;
+        cin>>N>>E;
+        
+        vector<int> g[N];
+        bool vis[N];
+        
+        memset(vis, false, sizeof(vis));
+        
+        for(int i=0;i<E;i++)
+        {
+            int u,v;
+            cin>>u>>v;
+            g[u].push_back(v);
+            g[v].push_back(u);
+        }
+
+        vector <int> res = dfs(g, N);
+        for (int i = 0; i < res.size (); i++)
+            cout << res[i] << " ";
+        cout<<endl;
+
+    }
+}  // } Driver Code Ends
