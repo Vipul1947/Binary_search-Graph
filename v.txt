@@ -1,0 +1,158 @@
+BINARY SEARCH PROBLEMS 
+
+
+1.) Given a sorted array arr containing n elements with possibly duplicate elements, the task is to find indexes of first and last occurrences of an element x in the given array.
+
+CODE :
+int find_first_occurence(int arr[],int end,int x,int start)
+{
+    if(end<start)
+    return -1;
+    int mid=start+(end-start)/2;
+    if(arr[mid]==x && (mid-1==-1 || arr[mid-1]!=x))
+    return mid;
+    else if(arr[mid]>=x)
+    return find_first_occurence(arr,mid-1,x,start);
+    else if(arr[mid]<x)
+    return find_first_occurence(arr,end,x,mid+1);
+}
+
+int find_last_occurence(int arr[],int end,int x,int start,int n)
+{
+    if(end<start)
+    return -1;
+    int mid=start+(end-start)/2;
+    if(arr[mid]==x && (mid+1==n || arr[mid+1]!=x))
+    return mid;
+    else if(arr[mid]>x)
+    return find_last_occurence(arr,mid-1,x,start,n);
+    else if(arr[mid]<=x)
+    return find_last_occurence(arr,end,x,mid+1,n);
+}
+
+vector<int> find(int arr[], int n , int x )
+{
+    // code here
+    vector<int> ans;
+    ans.push_back(find_first_occurence(arr,n-1,x,0));
+    ans.push_back(find_last_occurence(arr,n-1,x,0,n));
+    return ans;
+}
+
+2.) Search in rotated sorted array
+
+class Solution {
+public:
+    int find_min(vector<int> &nums,int start,int end)
+    {
+        if(start<=end){
+        int mid=start+(end-start)/2;
+        if(nums[mid-1]>=nums[mid] && (mid+1==nums.size() || nums[mid+1]>=nums[mid]))
+            return mid;
+        else if(nums[start]==nums[mid])
+            return mid+1;
+        else if(nums[end]==nums[mid])
+            return mid-1;
+        else if(nums[start]>nums[mid])
+            return find_min(nums,start,mid);
+        else if(nums[mid]>nums[end])
+            return find_min(nums,mid,end);
+        
+        }
+        return -1;
+    }
+    int find_target(vector<int> &nums,int start,int end,int target)
+    {
+        if(start<=end)
+        {
+        int mid=start+(end-start)/2;
+        if(nums[mid]==target)
+            return mid;
+        else if(nums[mid]>target)
+            return find_target(nums,start,mid-1,target);
+        else if(nums[mid]<target)
+            return find_target(nums,mid+1,end,target);
+        }
+        return -1;
+    }
+    int search(vector<int>& nums, int target) {
+        if(nums[0]==target)
+            return 0;
+        else if(nums[nums.size()-1]==target)
+            return nums.size()-1;
+        if(nums.size()==2)
+            return -1;
+        int index_of_min=nums[0]<=nums[nums.size()-1]?0:find_min(nums,0,nums.size()-1);
+        if(index_of_min<0)
+            return -1;
+        int x=find_target(nums,0,index_of_min-1,target);
+        if(x!=-1)
+            return x;
+        return find_target(nums,index_of_min,nums.size()-1,target);
+    }
+};
+
+3.) EKO - Eko
+#binary-search
+Lumberjack Mirko needs to chop down M metres of wood. It is an easy job for him since he has a nifty new woodcutting machine that can take down forests like wildfire. However, Mirko is only allowed to cut a single row of trees.
+Mirko‟s machine works as follows: Mirko sets a height parameter H (in metres), and the machine raises a giant sawblade to that height and cuts off all tree parts higher than H (of course, trees not higher than H meters remain intact). Mirko then takes the parts that were cut off. For example, if the tree row contains trees with heights of 20, 15, 10, and 17 metres, and Mirko raises his sawblade to 15 metres, the remaining tree heights after cutting will be 15, 15, 10, and 15 metres, respectively, while Mirko will take 5 metres off the first tree and 2 metres off the fourth tree (7 metres of wood in total).
+Mirko is ecologically minded, so he doesn‟t want to cut off more wood than necessary. That‟s why he wants to set his sawblade as high as possible. Help Mirko find the maximum integer height of the sawblade that still allows him to cut off at least M metres of wood.
+
+#include <iostream>
+using namespace std;
+long long wood_we_get(int *arr,int cut,int m,int n)
+{
+    long long int ans=0;
+    for(int i=0;i<n;i++)
+    {
+        if(arr[i]-cut>0)
+        {
+            ans+=(arr[i]-cut);
+        }
+    }
+    return ans;
+}
+int main()
+{
+    long long n,m;
+    cin>>n>>m;
+    int *arr=new int[n];
+    long long ans=0;
+    long long start=0;
+    long long end=-5;
+    for(int i=0;i<n;i++)
+    {
+        cin>>arr[i];
+        if(arr[i]>end)
+        end=arr[i];
+    }
+    while(end>=start)
+    {
+        long long cut=start+(end-start)/2;
+        long long wood_we_have=wood_we_get(arr,cut,m,n);
+        //cout<<wood_we_have<<" ";
+        if(wood_we_have==m)
+        {
+            cout<<cut<<endl;
+            return 0;
+        }
+        else if(wood_we_have>m)
+        {
+            ans=cut;
+            start=cut+1;
+        }
+        else 
+        {
+            end=cut-1;
+        }
+        
+    }
+    
+    cout<<ans<<endl;
+    
+    
+    
+    delete [] arr;
+
+    return 0;
+}
